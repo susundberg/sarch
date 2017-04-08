@@ -3,6 +3,15 @@ SARCH - Simple ARCHiving
 
 It's kind of like rsync with database or git annex for dummies.
 
+.. class:: no-web
+
+    .. image:: https://travis-ci.org/susundberg/sarch.svg?branch=master
+        :alt: Build status
+        :width: 100%
+        :align: right
+
+
+
 Features:
 -----------
 * Distributed system for storing (binary) files, no central repository required (but sure you can use it in centralized manner).
@@ -24,11 +33,16 @@ Usage:
 * sarch sync <target>
 * sarch log <filenames> - show log of given file
 
+Requirements:
+-----------
+Python with typing is required, i have tested it with python 3.5 that ships with ubuntu 16.04. Automated testing is runned on python 3.6 and python 3.7 on `Travis <https://travis-ci.org/susundberg/sarch/builds#>`_.
+
+
+
 
 Major features missing:
 ----------
 * Filesystem locking (to prevent several instances)
-* Clearing cancelled sync (now you can only resume)
 
 Minor todo:
 ----------
