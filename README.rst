@@ -35,7 +35,7 @@ Usage:
 
 Requirements:
 -----------
-Python with typing is required, i have tested it with python 3.5 that ships with ubuntu 16.04. Automated testing is runned on python 3.6 and python 3.7 on travis: https://travis-ci.org/susundberg/sarch/builds#
+Python with typing is required, i have tested it with python 3.5 that ships with ubuntu 16.04. Automated testing is runned on python 3.6 and python 3.7 on `Travis https://travis-ci.org/susundberg/sarch/builds#`.
 
 
 
