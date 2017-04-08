@@ -24,11 +24,14 @@ Usage:
 * sarch sync <target>
 * sarch log <filenames> - show log of given file
 
+Requirements:
+-----------
+Python with typing is required, i have tested it with python 3.5 that ships with ubuntu 16.04.
+
 
 Major features missing:
 ----------
 * Filesystem locking (to prevent several instances)
-* Clearing cancelled sync (now you can only resume)
 
 Minor todo:
 ----------
