@@ -78,7 +78,7 @@ class SyncTable:
       for fn in filenames:
          meta = db.meta_get( fn )
          if meta.checksum_normal() == False : # This file is missing and marked for revert or deleted
-            print_debug("#MERGE:%s in %s" % (meta.filename, self.name) )
+            print_debug("#SYNC:%s: merge missing %s" % (meta.filename, self.name) )
             self.merged.append( meta ) # Do add the meta anyway
          else:
             self.copy.append( meta )
@@ -362,9 +362,10 @@ def _build_process_common_files( xtable_local : SyncTable, xtable_other : SyncTa
        elif idx_local < 0 or ( idx_local > 0 and idx_other > 0): 
 
           # They seem to have same checksum, lets treat them like the same file. Lets take local
-          if meta_local.checksum == meta_other.checksum:
+          if meta_local.check_fs_equal( meta_other, verbose = False ):
              xtable_local.merge( meta_local )
              xtable_other.merge( meta_local )
+             print_debug("#SYNC:%s: merge identical" % meta_local.filename )
           else:   
              # Lets ask user to tell us which file he likes more.
              conflicts.append( (meta_local, meta_other) )
@@ -380,7 +381,7 @@ def _build_process_common_files( xtable_local : SyncTable, xtable_other : SyncTa
        else: # Oh its extra line, we never get here
           assert(0)
     
-    print_debug("#SYNC: %d files ok in both db  " % nfiles_ok )   
+    print_debug("#SYNC: %d files skipped, as identical in both db  " % nfiles_ok )   
     return conflicts       
        
 

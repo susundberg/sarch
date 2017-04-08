@@ -129,7 +129,7 @@ class TestSync( SyncBase ):
       make_a_identical_files( self.other )
       self.log.clear()
       self.do_sync()
-      self.log.info_contains( "#SYNC:",2 )
+      self.log.info_contains( ": merge identical", 16 )
       
    def test_sync_with_overwrite_new_on_top_of_deleted_with_ut( self ) -> None:
       self._create_deleted_and_commit()
