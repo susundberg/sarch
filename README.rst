@@ -3,6 +3,15 @@ SARCH - Simple ARCHiving
 
 It's kind of like rsync with database or git annex for dummies.
 
+.. class:: no-web
+
+    .. image:: https://travis-ci.org/susundberg/sarch.svg?branch=master
+        :alt: Build status
+        :width: 100%
+        :align: right
+
+
+
 Features:
 -----------
 * Distributed system for storing (binary) files, no central repository required (but sure you can use it in centralized manner).
