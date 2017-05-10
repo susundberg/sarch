@@ -46,6 +46,7 @@ Major features missing:
 
 Minor todo:
 ----------
+* status command should respect the folder where called
 * Untracked files should be listed as untracked directory - not all as single files
 * When transferring files we could also check for possibility of transferring single file and copy that (== when target has copies of files)
 * Should we be able to name the remotes? "sync origin"
