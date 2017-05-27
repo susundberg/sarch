@@ -46,6 +46,8 @@ Major features missing:
 
 Minor todo:
 ----------
+* 'export_targz' command to make tar-gz-with 4G limit (FAT). Extra: Update the old package, by reading the database and somehow updating the tar package (that was splitted). 
+* 'import' command to import files into YYYY-MM/filename folder and add those
 * status command should respect the folder where called
 * Untracked files should be listed as untracked directory - not all as single files
 * When transferring files we could also check for possibility of transferring single file and copy that (== when target has copies of files)
