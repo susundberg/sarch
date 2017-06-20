@@ -253,9 +253,11 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
             continue
          files_fs_no_db.append( real_filename )
    
+   if relative_current_path == ".":
+      relative_current_path = ""
+      
    # Then check for files that are not on FS but are on DB
    for meta in database.meta_list( key_starts_with = relative_current_path ):
-      
      if meta.checksum == Meta.CHECKSUM_REVERTED:
         files_db_revert.append( meta.filename )
         

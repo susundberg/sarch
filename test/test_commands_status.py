@@ -31,11 +31,16 @@ class TestStatus( TestBase ):
        self.repo.main("commit", )
        self.repo.main("status")
        
-    def test_status_removed(self):
+    def test_status_removed_created(self):
        self.repo.file_make( "REMOVED", )
+       self.repo.main("status", assumed_ret = 1 )
+       
+    def test_status_removed(self):
+       self.repo.file_del("FOO")
        self.repo.main("status", assumed_ret = 1 )
     
     def test_status_reverted(self):  
+       self.repo.main("status")
        self.repo.file_make("FOO", timestamp=2**10)
        self.repo.main("status", assumed_ret = 1 )
        self.repo.main("revert","FOO")
