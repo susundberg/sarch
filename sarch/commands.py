@@ -227,9 +227,8 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
    for op in sorted( staging_dict.keys() ):
       print_mod_info( "Pending '%s' operations:" % op, staging_dict[op], op.upper() )
    
-   
-      
-   for real_filename in filesystem.recursive_walk_files( "." ):
+   relative_current_path = filesystem.make_relative(".")
+   for real_filename in filesystem.recursive_walk_files( relative_current_path ):
       n_files += 1
       checked_files[real_filename] = 1
       try:
@@ -255,7 +254,7 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
          files_fs_no_db.append( real_filename )
    
    # Then check for files that are not on FS but are on DB
-   for meta in database.meta_list():
+   for meta in database.meta_list( key_starts_with = relative_current_path ):
       
      if meta.checksum == Meta.CHECKSUM_REVERTED:
         files_db_revert.append( meta.filename )
