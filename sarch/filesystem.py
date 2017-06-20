@@ -49,13 +49,6 @@ class Filesystem:
    def join( *pargs ) :
       return str( Path( *pargs ) ) 
    
-   #@staticmethod
-   #def path_root( filename : str ) -> str:
-      #path = Path( filename )
-      #if len(path.parts) > 1:
-         #return path.parts[0]
-      
-      
    
    def go_up_until( self, target_dir : str,  max_levels : int = None  ) -> None:
       
@@ -113,7 +106,7 @@ class Filesystem:
       except FileNotFoundError:
          raise SA_FS_Exception_NotFound("File not found %s" % path )
       return self.make_time( disk_time )
-      
+   
    def recursive_walk_files( self, abstract_filename : str ) -> Iterable[str]:
       target_absolute = self._make_absolute( abstract_filename )
       target_relative = self._make_relative_single( str(target_absolute) )

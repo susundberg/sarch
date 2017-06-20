@@ -1,6 +1,8 @@
 
 import os
 import time
+import datetime
+from pathlib import Path
 
 from typing import Dict, Set, Iterable, TypeVar, Any, Union, Tuple, Callable, Sequence, cast, IO
 from collections import OrderedDict
@@ -20,11 +22,11 @@ class SA_Cmd_Exception(SA_Exception):
 class CommandFlags:
    ARG_IS_PATH = "_path" # The argument is path and it must be resolved
    ARG_PATH_MAYBE = "_path_non_exiting" # Its ok if resolving above fails.
-   
+   ARG_IS_NOT_RELATIVE_PATH = "_path_non_relative"
    COMMAND_NO_DB    = "no_db" # The command must be executed without DB loaded
    COMMAND_NO_DB_OK = "no_db_ok" # The command tries to load db, but its ok if the db is not found
    COMMAND_WITH_DIRTY_SYNC = "db_dirty_sync_ok" # Command can be executed while sync is ongoing
-
+   
 
 
 CmdProps  = Dict[str, bool ]
@@ -79,6 +81,46 @@ def add( database : DatabaseBase, filesystem : Filesystem, filenames: Iterable[s
 _register_command( add , { "filenames" : {"nargs" : "+", "help" : "Filenames to be added to database", CommandFlags.ARG_IS_PATH : True } },
                          { } ) 
 
+def add_from( database : DatabaseBase, filesystem : Filesystem, filename: str ) -> int:
+   target_dir = filesystem.make_relative(".")
+   
+   fs_other = Filesystem( filename )
+   for real_filename in fs_other.recursive_walk_files( "." ):
+      modtime = fs_other.get_modtime( real_filename )
+      time_prefix = datetime.datetime.fromtimestamp( modtime ).strftime( CONFIG.ADD_FROM_DATE_FORMAT )
+      target_file = str( filesystem.make_relative( "%s" % ( Path(time_prefix) / Path(real_filename).name ), no_resolve=True ) )
+      target_file_noclash = target_file 
+      
+      meta_old = Meta( real_filename )
+      fs_other.meta_update( meta_old )
+      
+      loop = 0
+      if filesystem.file_exists( target_file_noclash ):
+         meta_new  = Meta(target_file_noclash )
+         filesystem.meta_update( meta_new )
+         if meta_old.check_fs_equal( meta_new ):
+            print_info("Files '%s' and '%s' identical, skipping" % (meta_old.filename, meta_new.filename ) )
+            fs_other.file_del( real_filename )
+            continue
+         # Same file exists and different checksum
+         while filesystem.file_exists( target_file_noclash ):
+           target_file_noclash = "%s-%03d" % ( target_file, loop )
+           loop += 1
+
+      # Now, move the file to proper place
+      data_stream = fs_other.file_read( real_filename )
+      meta_new = meta_old.copy()
+      meta_new.filename = target_file_noclash
+      filesystem.file_create( meta_new, data_stream )
+      database.staging_add( Operation(meta_new.filename, Operation.OP_ADD ) )
+      database.save()
+      print_info("%s -> %s" % ( meta_old.filename, meta_new.filename ))
+   return 0
+
+   
+_register_command( add_from , { "filename" : {"help" : "Path to be imported to database", CommandFlags.ARG_IS_NOT_RELATIVE_PATH : True } },
+                         { } ) 
+   
 def rm( database : DatabaseBase, filesystem : Filesystem, filenames: Iterable[str] ) -> int:
    """ Remove file or directory from database and FS """
    
@@ -227,7 +269,7 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
    for op in sorted( staging_dict.keys() ):
       print_mod_info( "Pending '%s' operations:" % op, staging_dict[op], op.upper() )
    
-   relative_current_path = filesystem.make_relative(".")
+   relative_current_path = str(filesystem.make_relative("."))
    for real_filename in filesystem.recursive_walk_files( relative_current_path ):
       n_files += 1
       checked_files[real_filename] = 1

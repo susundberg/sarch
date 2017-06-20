@@ -10,7 +10,9 @@ class CONFIG:
    PATH_SEPARATOR = "/"
    DATA_BLOCK_SIZE = (2**20)
    SSH_COMMAND = "ssh"
+   ADD_FROM_DATE_FORMAT = "%Y-%m"
    VERSION = "1.0.0"
+   
    
 output = print
 output_error = print

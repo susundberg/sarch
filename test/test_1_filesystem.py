@@ -100,6 +100,7 @@ class TestFS( unittest.TestCase ):
       self.fs.trash_add( "NONEXISTING", missing_ok = True )
       with self.assertRaises( SA_FS_Exception_NotFound ):
          self.fs.trash_add( "NONEXISTING2", missing_ok = False )
+
       
    def test_goup_on_sub( self ) -> None:
       os.chdir( self.foodir )

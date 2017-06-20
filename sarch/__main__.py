@@ -120,6 +120,15 @@ def main( commandline_args : List[str] ) -> int:
                   else:   
                      print_error( str(err) )
                      return -1
+            if CommandFlags.ARG_IS_NOT_RELATIVE_PATH in key_prop:
+               try:
+                  params[key] = filesystem.make_relative( params[key] ) 
+               except:
+                  pass # This is the wanted case, it should not be relative.
+               else:
+                  print_error("Path '%s' is relative to Sarch root. This command requires other path.")
+                  return -1
+               
                   
          database = open_database( filesystem.make_absolute(CONFIG.PATH) )
          
