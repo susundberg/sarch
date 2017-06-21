@@ -24,8 +24,9 @@ Features:
 Usage:
 -----------
 * sarch init <repository name>
-* sarch add <filenames/paths>
-* sarch rm <filenames/paths>
+* sarch add <filenames/paths> - add given files
+* sarch add_from <path> - add files from given path, to given folder with YYYY-MM/ folder prefix
+* sarch rm <filenames/paths> - remove given files
 * sarch status - fast check whats going one (based on file modtime)
 * sarch verify - check md5 of every file for corruption.
 * sarch commit - commit changes (--auto to automatically add modified/removed files)
@@ -47,7 +48,6 @@ Major features missing:
 Minor todo:
 ----------
 * 'export_targz' command to make tar-gz-with 4G limit (FAT). Extra: Update the old package, by reading the database and somehow updating the tar package (that was splitted). 
-* 'import' command to import files into YYYY-MM/filename folder and add those
 * Untracked files should be listed as untracked directory - not all as single files
 * When transferring files we could also check for possibility of transferring single file and copy that (== when target has copies of files)
 * Should we be able to name the remotes? "sync origin"
