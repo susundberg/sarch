@@ -58,6 +58,8 @@ def command_print_help( database, filesystem, help_on ):
     if help_on == None:
        print_info("Commands:")
        for command in sorted(registered_commands.keys()):
+          if command[0] == "_":
+             continue
           print_info("%s -- %s" % ( command.ljust(10), registered_commands[command][0].__doc__ ))
        return 0
     

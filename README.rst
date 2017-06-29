@@ -31,8 +31,9 @@ Usage:
 * sarch verify - check md5 of every file for corruption.
 * sarch commit - commit changes (--auto to automatically add modified/removed files)
 * sarch help - to list available commands
-* sarch sync <target>
+* sarch sync <target url>
 * sarch log <filenames> - show log of given file
+* sarch find_dups - find all duplicate files on the database (based on file checksum)
 
 Requirements:
 -----------

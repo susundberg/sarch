@@ -3,7 +3,7 @@ import os
 from .common import TestBase,TempDir
 from sarch.database import Meta
 
-class TestAdding( TestBase ):
+class TestAddingFrom( TestBase ):
    
    def setUp(self) -> None:
       super().setUp()

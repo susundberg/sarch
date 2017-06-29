@@ -248,6 +248,15 @@ class DatabaseBase( metaclass=ABCMeta ):
     def commit_list( self, sort_by : str = None, limit : int = 0, keys : Set[str] = None ) -> Iterable[ Commit ]:
        pass
     
+    def _prepare_search_key( self, key_starts_with ):
+       if key_starts_with == None:
+          return None
+       if len(key_starts_with) > 0 and key_starts_with[0] == ".":
+          key_starts_with = key_starts_with[1:]
+       if len(key_starts_with) == 0:
+          return None
+       return key_starts_with 
+    
     def recursive_walk_files( self, filename_raw : str, only_existing : bool = True ) -> Iterable[ Meta ]:
        """ Returns iterable list of filenames that match the given input. Some of the files might be removed """
        

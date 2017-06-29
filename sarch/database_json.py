@@ -88,6 +88,9 @@ class DatabaseJson( DatabaseBase ):
        self.db["stor"][meta.filename] = meta.json_to()
 
    def meta_list( self, key_starts_with : str = None ) ->  Iterable[ Meta ]:
+      
+      key_starts_with = self._prepare_search_key(key_starts_with)
+         
       for key, obj in self.db["stor"].items():
          if key_starts_with != None:
             if not key.startswith( key_starts_with ):

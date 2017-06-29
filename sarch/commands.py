@@ -82,6 +82,7 @@ _register_command( add , { "filenames" : {"nargs" : "+", "help" : "Filenames to 
                          { } ) 
 
 def add_from( database : DatabaseBase, filesystem : Filesystem, filename: str ) -> int:
+   """ Add files from given external folder and sort them on current folder based on their modification timestamp """
    target_dir = filesystem.make_relative(".")
    
    fs_other = Filesystem( filename )
@@ -295,8 +296,7 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
             continue
          files_fs_no_db.append( real_filename )
    
-   if relative_current_path == ".":
-      relative_current_path = ""
+
       
    # Then check for files that are not on FS but are on DB
    for meta in database.meta_list( key_starts_with = relative_current_path ):
@@ -326,6 +326,45 @@ def status( database: DatabaseBase, filesystem : Filesystem ) -> int:
 _register_command( status, {}, { CommandFlags.COMMAND_WITH_DIRTY_SYNC : True } )
                          
 
+def find_dups( database: DatabaseBase, filesystem : Filesystem ) -> int:
+   """ Find checksum duplicates from the database  """
+   relative_current_path = str(filesystem.make_relative("."))
+   
+   checksum_db   = {} # type: Dict[str,str]
+   checksum_dups = {} # type: Dict[str,List[str]]
+   
+   # Bit weird going, but i dont want to store shitload of 1 sized list - as they are 99% of the stuff,
+   # so lets rather store the plain filename and make a list on need
+   for meta in database.meta_list( key_starts_with = relative_current_path ):
+      if not meta.checksum_normal():
+         continue
+      if meta.checksum in checksum_db:
+         try:
+            checksum_dups[ meta.checksum ].append( meta.filename ) # type: ignore
+         except KeyError:
+            checksum_dups[ meta.checksum ] = [ checksum_db[ meta.checksum ] , meta.filename ]
+      else:
+         checksum_db[ meta.checksum ] = meta.filename
+         
+   # Full list gone through
+   if len(checksum_dups) == 0:
+       print_info("No duplicate checksums found.")
+       return 0
+    
+   print_info("Possible (cs matches) duplicate files:")
+   unsorted_duplicats = []
+   for dupcs in checksum_dups:
+       # We could make additional check if the filesize matches
+       escaped_names=[ '"%s"' % x for x in sorted(checksum_dups[dupcs]) ]
+       unsorted_duplicats.append( " ".join( escaped_names ) )
+   
+   for item in sorted(unsorted_duplicats):
+       print_info(item)
+   return 0
+
+_register_command( find_dups, {}, {} )         
+
+   
 def log( database: DatabaseBase, filesystem : Filesystem,  filenames: Sequence[str] , count : int ) -> int:
    """ Show registered database events on given files """
    def print_commit_info( commit_list, filename_list ):
@@ -439,7 +478,7 @@ def _fast_check_for_mods( database: DatabaseBase, filesystem : Filesystem ):
 
    
 def sync( database: DatabaseBase, filesystem : Filesystem,  url: str ) -> int:
-   
+   """ Syncronize this database with given database """
    if "://" not in url:
       url = "file://" + url
    
