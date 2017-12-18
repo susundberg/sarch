@@ -18,7 +18,7 @@ class SA_SYNC_Exception_SSH( SA_SYNC_Exception ):
 class SA_SYNC_Exception_SSH_Server_Error( SA_SYNC_Exception_SSH ):
    pass
 
-class SA_SYNC_Exception_SSH_Connection_Closed(SA_SYNC_Exception):
+class SA_SYNC_Exception_SSH_Connection_Closed(SA_SYNC_Exception_SSH):
    pass
 
 
@@ -378,6 +378,7 @@ class RemoteSSH( Remote ):
          print_error("Database open failed: %s" % err )
          self._close_raw()
          raise SA_SYNC_Exception_SSH("Could not fetch database")
+          
       return   
          
          

@@ -369,7 +369,7 @@ def _build_process_common_files( xtable_local : SyncTable, xtable_other : SyncTa
           else:   
              # Lets ask user to tell us which file he likes more.
              conflicts.append( (meta_local, meta_other) )
-             print_info(" Conflict: %s " % meta_local.filename )
+             print_info(" Conflict: %s" % meta_local.filename )
              
        # The local index is zero, and other > 0 -> other has modifications and those needs to be 
        # merged to local. 

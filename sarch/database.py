@@ -85,6 +85,10 @@ class Meta(DatabaseObjectBase):
       return (self.checksum[0] != "#")
    
    def check_fs_equal( self, meta_other : 'Meta', verbose : bool = True ) -> bool:
+      
+      if self.checksum == self.CHECKSUM_REMOVED and meta_other.checksum == self.checksum:
+          return True
+      
       for attr_name  in ["checksum", "modtime" ]:
          v_fs = getattr( self, attr_name )
          v_db = getattr( meta_other, attr_name )
